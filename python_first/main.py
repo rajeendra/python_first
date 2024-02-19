@@ -1,6 +1,12 @@
 # main module
+from numbers import Number
+from pathlib import Path
 import sys
-import math    
+import math
+import platform, string, os 
+from platform import python_version, system 
+import platform as pl  
+
 # math module ref can find here
 # https://docs.python.org/3/py-modindex.html
 
@@ -13,24 +19,24 @@ class Movie:
         self.imdb_score = imdb_score
         self.have_seen = have_seen
     
-    def nice_print(self):
+    def class_method_print(self):
         print("Title: ", self.title)
         print("Year of production: ", self.year)
         print("IMDB Score: ", self.imdb_score)
         print("I have seen it: ", self.have_seen)
 
-    def test_exe():
+    def class_method_obj():
         film_1 = Movie("Life of Brian",1979,8.1,True)
         film_2 = Movie("The Holy Grail",1975,8.2,True)
 
         #print(film_1.title, film_1.imdb_score)
-        film_2.nice_print()
-        Movie.nice_print(film_2)
+        film_2.class_method_print()
+        Movie.class_method_print(film_2)
         films = [film_1,film_2]
 
         films = [film_1,film_2]
         print(films[1].title,films[0].title)
-        films[0].nice_print()
+        films[0].class_method_print()
 
 def outer_function_test():
     
@@ -51,11 +57,23 @@ def arguments_parameter_test():
     greeting(age=32, name='Peter')
     greeting() #// Exception: missing 1 required positional argument: 'name'
 
-def test():        
-    Movie.test_exe()
+def classes_and_objects_test():        
+    Movie.class_method_obj()
+
+def import_modules_test():
     print( add(34,67) )
     print( multiply(34,67) )
     print( math.frexp(5) )
+
+    print(dir(platform))
+    print(platform.python_version())
+    
+    print(dir(pl))
+    print(pl.python_version())
+    
+    print(python_version())
+    
+    print(system())    
 
 def string_test():
     msg='welcome to Python 101: Strings'
@@ -518,10 +536,132 @@ def dictionaries_test():
     #// sum
     print('The sum of the ages: ', sum(people.values()))
 
+def files_test():
+    path1 = Path(__file__).parent / "./data/greeting.txt"
+    path2 = Path(__file__).parent / "../data/friends.csv"
+
+    my_file = open(path2,'r') # w, a
+    #print(my_file.read())
+    
+    # File read always start from the where the pointer it currently have
+
+    print(my_file.read(14)) #// read ten characters
+    print(my_file.readline()) #// read first line
+    print(my_file.readline()) #// read second line
+
+    my_file.close()
+
+    with open(path2,'r') as f:
+        print(f.read()) #// John, 1939 Eric, 1943 Michael, 1943 Graham, 1941 TerryG, 1940 TerryJ, 1942
+
+    print('')
+    with open(path2,'r') as f:
+        friends = f.read().splitlines()
+        print(friends) #// ['John, 1939', 'Eric, 1943', 'Michael, 1943', 'Graham, 1941', 'TerryG, 1940', 'TerryJ, 1942']
+        for friend in friends:
+            friend = friend.split(',')
+            name = friend[0]
+            year = int(friend[1].strip())
+            print(f'In 2030 {name} will be {2030 -year} years old')
+
+    print('')
+    with open(path2,'r') as f:
+        #for line in f: #not in scrimba
+        for line in f.readlines(): #Scrimba workaround
+            print(line)
+
+    print('')
+    with open(path2,'r') as f:
+        line_by_line = f.readlines()
+    with open(path2,'r') as f:
+        line_by_line1 = f.read().splitlines()
+    print('readlines: ',line_by_line) #// readlines: ['Hello,', 'Welcome to Monty Pythons Flying Circus!']
+    print('splitlines: ',line_by_line1) #// splitlines: ['Hello,', 'Welcome to Monty Pythons Flying Circus!']
+
+def handle_exception_test():
+    #// basic structue
+    try:
+        num=int(input('Enter a number: '))
+        print("30 divided by",num, "is: ", 30/num)
+    except:
+        print("Invalid Input!")
+    
+    print("**Thank you for playing!**")
+
+    #// Exception run from top to bottom
+    try:
+        num=int(input('Enter a number: '))
+        print("30 divided by",num, "is: ", 30/num)
+    except ZeroDivisionError as err:
+        print(err, "You can't divide by Zero!!!")
+    except ValueError as err:
+        print(err, "Bad Value!")
+    except:
+        print("Invalid Input!")
+    
+    print("**Thank you for playing!**")
+
+    #// raise customize error
+    try:
+        num=int(input('Enter a number between 1 and 30: '))
+        num1 = 30/num
+        if num1 != None:
+            if num > 30:
+                raise ValueError(num)
+    except ZeroDivisionError as err:
+        print(err, "You can't divide by Zero!!!")
+    except ValueError as err:
+        print(err,"Bad Value not between 1 and 30!")
+    except:
+        print("Invalid Input!")
+    else:
+        print("30 divided by",num, "is: ", 30/num)
+    finally:
+        print("**Thank you for playing!**")
+
+def inheritance_test():
+    class Person:
+        def move(self):
+            print("Moves 4 paces")
+        def rest(self):
+            print("Gains 4 health points")
+
+    class Doctor(Person):
+        def heal(self):
+            print("Heals 10 health points")
+
+    doc1 = Doctor()
+    doc1.move()
+    doc1.heal()
+
+    #// Overide Person's move() method
+    class Fighter(Person):
+        def fight(self):
+            print("Do 10 health points of damage")
+        def move(self):
+            print("Moves 6 paces")
+
+    fighter1 = Fighter()
+    fighter1.move()
+    fighter1.fight()
+
+    #// multiple inheritance
+    class Wizard(Doctor,Fighter):
+        def cast_spell(self):
+            print("Turns invisble")
+        def heal(self):
+            print("Heals 15 health points")
+        
+    character1=Wizard()
+    character1.move() #// Moves 6 paces
+    character1.heal()
+
+    print(platform.python_version()) #// python version
+
 
 print('-- start --')
 #print(sys.version)
 #list_test()
 #split_n_join_test()
-dictionaries_test()
+import_modules_test()
 print('-- end --')
