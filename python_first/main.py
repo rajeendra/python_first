@@ -6,6 +6,8 @@ import math
 import platform, string, os 
 from platform import python_version, system 
 import platform as pl  
+import random
+import timeit
 
 # math module ref can find here
 # https://docs.python.org/3/py-modindex.html
@@ -658,10 +660,257 @@ def inheritance_test():
 
     print(platform.python_version()) #// python version
 
+def zip_unzip_test():
+    nums = '1234' 
+    letters = ['a','b','c','d']
+    names =['John','Eric','Michael','Graham','Joe']
+
+    #// Mapping items of two collections by index and transform as a new items of colloection 
+    combo = list(zip(nums,letters))
+    print(combo) #// [('1', 'a'), ('2', 'b'), ('3', 'c'), ('4', 'd')]
+
+    combo = dict(zip(nums,letters))
+    print(combo) #// {'1': 'a', '2': 'b', '3': 'c', '4': 'd'}
+
+    combo = list(zip(nums,letters,names))
+    print(combo) #// [('1', 'a', 'John'), ('2', 'b', 'Eric'), ('3', 'c', 'Michael'), ('4', 'd', 'Graham')] 
+
+    #// unzip - seperate back
+    num,let,nam =zip(*combo)
+    print(num,let,nam) #// ('1', '2', '3', '4') ('a', 'b', 'c', 'd') ('John', 'Eric', 'Michael', 'Graham')
+
+    keys = 'this parrot is deceased'
+    values = 'denna papegojan är avliden'
+    keys = keys.split()
+    values = values.split()
+    print(keys,values) #// ['this', 'parrot', 'is', 'deceased'] ['denna', 'papegojan', 'är', 'avliden']
+
+    en_sv_dict = dict(zip(keys,values))
+    print(en_sv_dict) #//{'this': 'denna', 'parrot': 'papegojan', 'is': 'är', 'deceased': 'avliden'}
+    new_dict = {key:value for key,value in zip(keys,values)}
+    print(new_dict) #// {'this': 'denna', 'parrot': 'papegojan', 'is': 'är', 'deceased': 'avliden'}
+
+    en,sv = list(en_sv_dict.keys()),list(en_sv_dict.values())
+    print(en,sv) #// ['this', 'parrot', 'is', 'deceased'] ['denna', 'papegojan', 'är', 'avliden']
+
+def lambda_function_test():
+    # Lambda function allways return a value, not like a regular function is optional
+
+    #// regular function
+    def square(x):
+        return x*x
+    
+    #// lambda function
+    #name = lambda parameter(s): expression
+    square_lam = lambda x: x*x
+    print(square_lam(3))
+
+    #// single line function
+    def square2(x):return x*x
+    print(square2(3))
+
+    #//
+    def name_and_alias(name,alias):
+        return name.strip().title() + ':' + alias.strip().title()
+    
+    name_and_alias_lam = lambda name, alias : name.strip().title() + ':' + alias.strip().title()
+
+    print(name_and_alias(' john  ClEEse  ','HECKLER'))
+    print(name_and_alias_lam(' john  ClEEse  ','HECKLER')) 
+
+    #// sort by use of a lambda function
+    monty_python = ['John Marwood Cleese','Eric Idle','Michael Edward Palin','Terrence Vance Gilliam','Terry Graham Perry Jones', 'Graham Arthur Chapman']
+
+    #key_lam = lambda name:name.split()
+    #print(key_lam(monty_python[0]))
+    #print(key_lam(monty_python[0])[-1])
+
+    #monty_python.sort(key = lambda name:name.split(' ')[0]) #// sort from first name
+    monty_python.sort(key = lambda name:name.split(' ')[1]) #// sort from middle name
+    #monty_python.sort(key = lambda name:name.split(' ')[-1]) #// sort from last name
+    print(monty_python)
+    
+    #// sort by use of a function
+    def sort_names(name):
+        return name.split(' ')
+    monty_python.sort(key= sort_names)
+    print(monty_python)
+
+    #// return type <class 'function'> - lambda a: a*n
+    def func(n):
+      return n
+    print(type(func(3))) #// <class 'int'> - 3
+
+    def func(n):
+      return lambda a: a*n
+    print(type(func(3))) #// <class 'function'> - lambda a: a*3
+    
+    doubler = func(2) #// This return lambda function 'lambda a: a*2'
+    print(doubler(3)) #// This return 6
+    quintipler = func(5) #// This return lambda function 'lambda a: a*2'
+    print(quintipler(3)) #// This return 15
+
+    #//
+    def price_calc(start,hourly_rate):
+        return lambda hours: start + hourly_rate * hours
+        
+    walkin_cost = price_calc(10,30)
+    premium_cost = price_calc(1,25)
+    print(walkin_cost(2)) #// 70
+    print(premium_cost(2)) #// 51
+
+    #// call lambda function at the same time declaration
+    print((lambda a,b,c: a+b+c)(2,3,4)) #// 9
+    print(price_calc(1,25)(2)) #//51
+
+    #// use default values (c=2) for lambda paraeters
+    #// Note: place defaulted in the last
+    print((lambda a,b,c=2: a+b+c)(2,3))
+
+    #// name your arguments
+    print((lambda a,b,c=2: a+b+c)(2,c=3,b=4))
+
+    #//unpacking arguments
+    print((lambda *args: sum(args))(2,3,4,50))
+
+    #// divide this by integer
+    signups = ['MPF104', 'MPF20', 'MPF2', 'MPF17', 'MPF3', 'MPF45']
+    print(sorted(signups)) # Lexicographic sort
+    #write sorting by integer
+    print(sorted(signups,key = lambda a:int(a[3:]))) # Integer sort
+
+    #// sort object
+    class Player:
+      def __init__(self, name, score):
+          self.name = name
+          self.score =  score
+
+    Eric = Player('Eric', 116700)
+    John = Player('John', 24327)
+    Terry = Player('Terry', 150000)
+    player_list = [Eric, John, Terry]
+
+    #Exercise: Sort this by score using lambda!
+    player_list.sort(key = lambda playyer: playyer.score, reverse=True)
+    print([ {player.name,  player.score} for player in player_list])
+
+def comprehensions_test():
+    #// Comprehensions lists
+    
+    numbers = [1,2,3,4,5,6,7,8,9]
+    # give me a list with num squared for each num in numbers
+    new_list = []
+    for num in numbers:
+        new_list.append(num*num)
+    print(new_list)
+
+    #// Do above in short way
+    new_list = [num*num for num in numbers]
+    print(new_list)
+
+    #// use if condition to select items from the list
+    # give me a list with num for each num in numbers if num is even 
+    new_list = [num for num in numbers if num % 2 == 0]
+    print(new_list)
+
+    #// use filter
+    new_list = filter(lambda num: num % 2 ==0, numbers)
+    print(list(new_list))
+
+    #// nested loop
+    # I want a (letter, num) pair for each letter in 'spam' and each number in '0123'
+    new_list = []
+    for letter in 'spam':
+      for num in range(3):
+          new_list.append((letter,num))
+    print(new_list)
+
+    new_list = [(letter,num) for letter in'spam' for num in range(3)]
+    print(new_list)
+
+    #// Comprehensions - dictionary
+    movies = ["And Now for Something Completely Different","Monty Python and the Holy Grail",
+    "Monty Python's Life of Brian","Monty Python Live at the Hollywood Bowl","Monty Python's The Meaning of Life","Monty Python Live (Mostly)"]
+    year =[1971,1975,1979,1982,1983,2014]
+    names = ['John','Eric','Michael','Graham','Terry','TerryG']
+
+    print(list(zip(movies, year))) #// [ ('movie n', 19nn), (), ()  ]
+
+    # give me a dict('movies': year) for each movies, year in zip(movies, year)
+    new_dict = dict()
+    for movie, yr in zip(movies,year):
+        new_dict[movie] = yr
+    print(new_dict) #// { 'movie n':19nn, '':'', '',''  }
+
+    new_dict = {movie:yr for movie,yr in zip(movies,year)}
+    print(new_dict) #// exactly same result as above
+
+    #// movies yr < 1983
+    new_dict = {movie:yr for movie,yr in zip(movies,year) if yr < 1983}
+    print(new_dict)  
+
+def randomness_test():
+    for i in range(5):
+        print(random.random())
+        #// between 1 and 6
+        print(random.uniform(1,6))
+        print(random.randint(1,6))
+        print(random.randrange(1,100,2)) #// 1, 3, 5 .. 99
+        print('')
+
+    friends_list =  ['John', 'Eric', 'Michael', 'Terry', 'Graham']
+    print(random.choice(friends_list))
+    print(random.sample(friends_list,3)) #// [ randomly choic 3 items ]
+    print(random.shuffle(friends_list)) #// shuffle
+    x=random.shuffle(friends_list) #// shuffle
+    print(x) #// shuffle
+
+    #smallcaps = 'abcdefghijklmnopqrstuvwxyz'
+    #largecaps = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    #digits = '0123456789'
+    letters_numbers = string.ascii_letters + string.digits
+    word = ''
+    for i in range(7):
+        word = word + random.choice(letters_numbers)
+    print(word)
+
+def test1():
+    [x for x in range(1, 151) if not any([x % y == 0 for y in range(2, x)]) and not x == 1]
+    return(1)
+
+def test2():
+    [x for x in range(2, 151) if not any([x % y == 0 for y in range(2, x)])]
+
+def test3():
+    # Initialize a list
+    primes = []
+    for possiblePrime in range(2, 151):
+    # Assume number is prime until shown it is not.
+        isPrime = True
+        for num in range(2, int(possiblePrime ** 0.5) + 1):
+            if possiblePrime % num == 0:
+                isPrime = False
+                break
+        if isPrime:
+            primes.append(possiblePrime)
+
+def performance_and_timeit_module_test():
+    #import timeit
+
+    def is_prime_number(x):
+        print([y for y in range(2, x)])
+        print([ f'{x} % {y} == { x % y}' for y in range(2, x)])
+        print([x % y == 0 for y in range(2, x)])
+        print( any([x % y == 0 for y in range(2, x)]) )
+        print( f' {x} is not a prime number' if any([x % y == 0 for y in range(2, x)]) else f'{x} is a prime number')
+    
+    is_prime_number(7)
+    
+    print('')
+    print(timeit.timeit('test1()', globals=globals(), number=10))
+    print(timeit.timeit('test2()', globals=globals(), number=10))
+    print(timeit.timeit('test3()', globals=globals(), number=10))  
 
 print('-- start --')
-#print(sys.version)
-#list_test()
-#split_n_join_test()
-import_modules_test()
+performance_and_timeit_module_test()
 print('-- end --')
