@@ -40,6 +40,79 @@ class Movie:
         print(films[1].title,films[0].title)
         films[0].class_method_print()
 
+def variables_dataTypes_typecasting_test():
+    my_none = None
+    my_string = 'my name'
+    my_integer = 1
+    my_flot = 1.2
+    my_boolean = True
+
+    my_string_int = '7'
+    my_string_flot = '7.77'
+
+    print(type(my_string))
+    print(type(my_integer))
+    print(type(my_flot))
+    print(type(my_boolean))
+
+    #escape character (/)
+    #  'it\'s' or  "it's"
+    print('it\'s')
+    print("it's")
+
+    #typecasting
+    #  int(), str(), float()
+    #    it is possible to cast from float to int 
+    #    it is not possible to cast the string float to int // in should do int(float("2.4"))
+    
+    print('')
+    print(int(float(my_string_flot)))
+
+    print('')
+    print(str(my_string))
+    print(str(my_string_int))
+    print(str(my_string_flot))
+    print(str(my_integer))
+    print(str(my_flot))
+    print(str(my_boolean))
+    print(str(my_none))
+
+    print('')
+    print(bool(my_string))
+    print(bool(my_string_int))
+    print(bool(my_string_flot))
+    print(bool(my_integer))
+    print(bool(my_flot))
+    print(bool(my_boolean))
+    print(bool(my_none))
+
+    print('')
+    #print(int(my_string))
+    print(int(my_string_int))
+    #print(int(my_string_flot))
+    print(int(my_integer))
+    print(int(my_flot))
+    print(int(my_boolean))
+    #print(int(my_none))
+
+    print('')
+    #print(float(my_string))
+    print(float(my_string_int))
+    print(float(my_string_flot))
+    print(float(my_integer))
+    print(float(my_flot))
+    print(float(my_boolean))
+    #print(float(my_none))
+
+def arithmatic_operations_test():
+    a=17
+    b=3
+    print('Multiplication : ', a * b)
+    print('Division (float) : ', a / b)  #// 5.666666666666667
+    print('Division (floor) : ', a // b) #// 5
+    print('Modulus : ', a % b) #// 2 - remainder
+    print('Exponent : ', a ** b) #// 4913
+
 def outer_function_test():
     
     def inner_function_test():
@@ -913,6 +986,8 @@ def performance_and_timeit_module_test():
 
 print('-- start --')
 
+#variables_dataTypes_typecasting_test()
+#arithmatic_operations_test()
 #outer_function_test()
 #arguments_parameter_test()
 #classes_and_objects_test()
